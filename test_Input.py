@@ -1,6 +1,5 @@
 import math
 
-from src.Input import Input
 from src.Distributions import Distribution
 
 def test_input_normal():

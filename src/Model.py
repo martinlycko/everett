@@ -1,26 +1,24 @@
-from src.Input import Input
-
+import pandas as pd
 
 class ForecastingModel:
     def __init__(self):
-        self.Inputs = []
-        self.results = []
+        self.Inputs = {}
+        self.results = pd.DataFrame()
+        self.runs = None
+        self.steps = None
 
-    def forecast(self):
-        # Overwrite this function in instance
-        pass
+    def addInput(self, name, input):
+        self.Inputs[name] = input
 
-    def addInput(self, input: Input):
-        self.Inputs.append(input)
+    def multiverse(self, runs: int, function, steps):
+        # Empty the results dataframe
+        self.results = pd.DataFrame()
 
-    def multiverse(self, runs: int):
-        results = []
-        for _ in range(runs):
-            input_values = [inp.generateValue() for inp in self.Inputs]
-            result = self.forecast(*input_values)
-            results.append(result)
-        self.results = results
-        return results
-    
-    def multiverse_avg(self: int):
-        return sum(self.results) / len(self.results)
+        for i in range(runs):
+            # Run the function for the given number of steps
+            result = function(steps)
+            # Append the result to the model's results dataframe with the run identifier
+            result['run_id'] = i
+            self.results = pd.concat([self.results, result], ignore_index=True)
+        
+        return self.results
